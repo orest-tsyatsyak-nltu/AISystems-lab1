@@ -20,6 +20,8 @@ public abstract class AbstractSegmentedSymbolMatcher {
 
     protected final int numberOfDiagonalSegments;
 
+    protected final double similarityPercentage;
+
     protected AbstractSegmentedSymbolMatcher(char[][] letterInSegmentedForm) {
         if (letterInSegmentedForm.length != NUMBER_OF_ROWS_IN_NINE_SEGMENT_DISPLAY) {
             throw new IllegalArgumentException("Number of rows must be equal to " + NUMBER_OF_ROWS_IN_NINE_SEGMENT_DISPLAY);
@@ -31,6 +33,7 @@ public abstract class AbstractSegmentedSymbolMatcher {
         numberOfHorizontalSegments = countNumberOfHorizontalSegments();
         numberOfVerticalSegments = countNumberOfVerticalSegments();
         numberOfDiagonalSegments = countNumberOfDiagonalSegments();
+        similarityPercentage = calculateSimilarityPercentage();
     }
 
     protected int countNumberOfHorizontalSegments() {
@@ -65,7 +68,7 @@ public abstract class AbstractSegmentedSymbolMatcher {
         return verticalSegments;
     }
 
-    private int countVerticalSegmentsInColumn(int colI) {
+    protected int countVerticalSegmentsInColumn(int colI) {
         final int START_POSITION_OF_VERTICAL_SEGMENT = 1;
         final int STEP_TO_NEXT_VERTICAL_SEGMENT_IN_SAME_COLUMN = 4;
         int verticalSegmentsCount = 0;
@@ -80,7 +83,7 @@ public abstract class AbstractSegmentedSymbolMatcher {
 
     protected boolean hasVerticalSegment(int rowIStartPosition, int colI) {
         int foundElementsOfSegment = 0;
-        for (int rowI = rowIStartPosition; rowI < letterInSegmentedForm.length; rowI++) {
+        for (int rowI = rowIStartPosition; rowI < rowIStartPosition + NUMBER_OF_ELEMENTS_IN_SEGMENT; rowI++) {
             if (letterInSegmentedForm[rowI][colI] == SEGMENT_PIECE_ACTIVE_CHARACTER) {
                 foundElementsOfSegment++;
             }
@@ -101,7 +104,7 @@ public abstract class AbstractSegmentedSymbolMatcher {
         return diagonalSegmentsCount;
     }
 
-    private boolean diagonalHasSegment(int rowIStarter) {
+    protected boolean diagonalHasSegment(int rowIStarter) {
         final int START_POSITION_FOR_COLUMN_IN_DIAGONAL = 3;
         int foundElementsInSegment = 0;
         for (int colI = START_POSITION_FOR_COLUMN_IN_DIAGONAL, rowI = rowIStarter;
@@ -119,12 +122,14 @@ public abstract class AbstractSegmentedSymbolMatcher {
 
     protected abstract int getNumberOfNeededDiagonalSegments();
 
+    protected abstract char getMatchersSymbol();
+
     protected double additionalSimilarityFactor() {
-        final int NO_ADDITIONAL_FACTOR = 100;
-        return NO_ADDITIONAL_FACTOR;
+        final int FULLY_SIMILAR_BY_DEFAULT = 100;
+        return FULLY_SIMILAR_BY_DEFAULT;
     }
 
-    public final double getSimilarityPercentage() {
+    protected double calculateSimilarityPercentage(){
         double similarityPercentForHorizontalSegments = findSimilarityInPercent(
                 numberOfHorizontalSegments, getNumberOfNeededHorizontalSegments()
         );
@@ -153,4 +158,12 @@ public abstract class AbstractSegmentedSymbolMatcher {
         return Arrays.stream(numbers).average().orElse(0);
     }
 
+    public final double getSimilarityPercentage() {
+        return similarityPercentage;
+    }
+
+    @Override
+    public String toString() {
+        return "Given segmented character is similar to %s on %s".formatted(getMatchersSymbol(), similarityPercentage);
+    }
 }
