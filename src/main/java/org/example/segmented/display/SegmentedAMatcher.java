@@ -22,7 +22,7 @@ public class SegmentedAMatcher extends AbstractSegmentedSymbolMatcher {
     }
 
     @Override
-    protected char getMatchersSymbol() {
+    public char getMatchersSymbol() {
         return 'A';
     }
 

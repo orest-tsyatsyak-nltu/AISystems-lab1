@@ -122,7 +122,7 @@ public abstract class AbstractSegmentedSymbolMatcher {
 
     protected abstract int getNumberOfNeededDiagonalSegments();
 
-    protected abstract char getMatchersSymbol();
+    public abstract char getMatchersSymbol();
 
     protected double additionalSimilarityFactor() {
         final int FULLY_SIMILAR_BY_DEFAULT = 100;

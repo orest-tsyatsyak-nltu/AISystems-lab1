@@ -22,11 +22,11 @@ public class SegmentedUMatcher extends AbstractSegmentedSymbolMatcher{
 
     @Override
     protected double additionalSimilarityFactor() {
-        return rowHasHorizontalSegment(4) ? 0 : 100;
+        return !rowHasHorizontalSegment(4) && !rowHasHorizontalSegment(0) ? 100 : 0;
     }
 
     @Override
-    protected char getMatchersSymbol() {
+    public char getMatchersSymbol() {
         return 'U';
     }
 }

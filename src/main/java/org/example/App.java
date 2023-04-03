@@ -21,6 +21,8 @@ public class App {
     public static final String ANSI_MAGENTA = "\033[35m";
     public static final String ANSI_RESET = "\033[0m";
 
+    public static final String ANSI_RED = "\033[31m";
+
     public static void main(String[] args) {
         String pathToFile;
         System.out.print("Enter filename with segmented letter: ");
@@ -28,23 +30,58 @@ public class App {
         SegmentedCharacterFileReader segmentedCharacterFileReader = new SegmentedCharacterFileReader(pathToFile);
         try {
             char[][] characterInSegmentedFormat = segmentedCharacterFileReader.readSegmentedCharacter();
-            printSimilarityPercent(new SegmentedAMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedCMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedGMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedFMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedJMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedHMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedLMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedSMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedUMatcher(characterInSegmentedFormat));
-            printSimilarityPercent(new SegmentedYMatcher(characterInSegmentedFormat));
+            findTheLeastSimilarAndPrintIt(
+                    new SegmentedAMatcher(characterInSegmentedFormat),
+                    new SegmentedCMatcher(characterInSegmentedFormat),
+                    new SegmentedGMatcher(characterInSegmentedFormat),
+                    new SegmentedFMatcher(characterInSegmentedFormat),
+                    new SegmentedJMatcher(characterInSegmentedFormat),
+                    new SegmentedHMatcher(characterInSegmentedFormat),
+                    new SegmentedLMatcher(characterInSegmentedFormat),
+                    new SegmentedSMatcher(characterInSegmentedFormat),
+                    new SegmentedUMatcher(characterInSegmentedFormat),
+                    new SegmentedYMatcher(characterInSegmentedFormat)
+            );
         } catch (RuntimeException ex) {
             ex.printStackTrace();
         }
     }
 
-    private static void printSimilarityPercent(AbstractSegmentedSymbolMatcher segmentedSymbolMatcher){
-        if(segmentedSymbolMatcher.getSimilarityPercentage() == 100){
+    private static void findTheLeastSimilarAndPrintIt(AbstractSegmentedSymbolMatcher... matchers) {
+        double leastSimilarPercent = 101;
+        int leastSimilarIndex = 0;
+        double closestSimilarPercent = -1;
+        int closestSimilarIndex = 0;
+        for (int i = 0; i < matchers.length; i++) {
+            double similarityPercentage = matchers[i].getSimilarityPercentage();
+            if (similarityPercentage < leastSimilarPercent) {
+                leastSimilarPercent = similarityPercentage;
+                leastSimilarIndex = i;
+            }
+            if(similarityPercentage > closestSimilarPercent){
+                closestSimilarPercent = similarityPercentage;
+                closestSimilarIndex = i;
+            }
+            printSimilarityPercent(matchers[i]);
+        }
+        System.out.print(ANSI_RED);
+        AbstractSegmentedSymbolMatcher leastSimilarSymbol = matchers[leastSimilarIndex];
+        System.out.println("\n" +
+                           "The least similarity percentage to given symbol has %s %s".formatted(
+                                   leastSimilarSymbol.getMatchersSymbol(),
+                                   leastSimilarSymbol.getSimilarityPercentage()
+                           ) + ANSI_RESET);
+        System.out.print(ANSI_MAGENTA);
+        AbstractSegmentedSymbolMatcher closestSimilarSymbol = matchers[closestSimilarIndex];
+        System.out.println("\n" +
+                           "The closest similarity percentage to given symbol has %s %s".formatted(
+                                   closestSimilarSymbol.getMatchersSymbol(),
+                                   closestSimilarSymbol.getSimilarityPercentage()
+                           ) + ANSI_RESET);
+    }
+
+    private static void printSimilarityPercent(AbstractSegmentedSymbolMatcher segmentedSymbolMatcher) {
+        if (segmentedSymbolMatcher.getSimilarityPercentage() == 100) {
             System.out.print(ANSI_MAGENTA);
         }
         System.out.println(segmentedSymbolMatcher + ANSI_RESET);

@@ -26,7 +26,7 @@ public class SegmentedHMatcher extends AbstractSegmentedSymbolMatcher{
     }
 
     @Override
-    protected char getMatchersSymbol() {
+    public char getMatchersSymbol() {
         return 'H';
     }
 }
