@@ -22,8 +22,9 @@ public class SegmentedHMatcher extends AbstractSegmentedSymbolMatcher{
 
     @Override
     protected double additionalSimilarityFactor() {
-        return rowHasHorizontalSegment(4) && hasVerticalSegment(1, 0) ? 100 : 0;
+        return rowHasHorizontalSegment(8) ? 0 : 100;
     }
+
 
     @Override
     public char getMatchersSymbol() {

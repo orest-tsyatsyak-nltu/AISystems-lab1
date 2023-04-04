@@ -1,19 +1,15 @@
 package org.example;
 
 import org.example.segmented.display.AbstractSegmentedSymbolMatcher;
-import org.example.segmented.display.SegmentedAMatcher;
-import org.example.segmented.display.SegmentedCMatcher;
-import org.example.segmented.display.SegmentedFMatcher;
-import org.example.segmented.display.SegmentedGMatcher;
+import org.example.segmented.display.Segmented3Matcher;
+import org.example.segmented.display.Segmented8Matcher;
 import org.example.segmented.display.SegmentedHMatcher;
-import org.example.segmented.display.SegmentedJMatcher;
-import org.example.segmented.display.SegmentedLMatcher;
-import org.example.segmented.display.SegmentedSMatcher;
-import org.example.segmented.display.SegmentedUMatcher;
-import org.example.segmented.display.SegmentedYMatcher;
+import org.example.segmented.display.SegmentedOMatcher;
 import org.example.segmented.file.SegmentedCharacterFileReader;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class App {
@@ -31,16 +27,10 @@ public class App {
         try {
             char[][] characterInSegmentedFormat = segmentedCharacterFileReader.readSegmentedCharacter();
             findTheLeastSimilarAndPrintIt(
-                    new SegmentedAMatcher(characterInSegmentedFormat),
-                    new SegmentedCMatcher(characterInSegmentedFormat),
-                    new SegmentedGMatcher(characterInSegmentedFormat),
-                    new SegmentedFMatcher(characterInSegmentedFormat),
-                    new SegmentedJMatcher(characterInSegmentedFormat),
+                    new Segmented3Matcher(characterInSegmentedFormat),
                     new SegmentedHMatcher(characterInSegmentedFormat),
-                    new SegmentedLMatcher(characterInSegmentedFormat),
-                    new SegmentedSMatcher(characterInSegmentedFormat),
-                    new SegmentedUMatcher(characterInSegmentedFormat),
-                    new SegmentedYMatcher(characterInSegmentedFormat)
+                    new SegmentedOMatcher(characterInSegmentedFormat),
+                    new Segmented8Matcher(characterInSegmentedFormat)
             );
         } catch (RuntimeException ex) {
             ex.printStackTrace();
@@ -48,35 +38,22 @@ public class App {
     }
 
     private static void findTheLeastSimilarAndPrintIt(AbstractSegmentedSymbolMatcher... matchers) {
-        double leastSimilarPercent = 101;
-        int leastSimilarIndex = 0;
-        double closestSimilarPercent = -1;
-        int closestSimilarIndex = 0;
-        for (int i = 0; i < matchers.length; i++) {
-            double similarityPercentage = matchers[i].getSimilarityPercentage();
-            if (similarityPercentage < leastSimilarPercent) {
-                leastSimilarPercent = similarityPercentage;
-                leastSimilarIndex = i;
-            }
-            if(similarityPercentage > closestSimilarPercent){
-                closestSimilarPercent = similarityPercentage;
-                closestSimilarIndex = i;
-            }
-            printSimilarityPercent(matchers[i]);
-        }
-        System.out.print(ANSI_RED);
-        AbstractSegmentedSymbolMatcher leastSimilarSymbol = matchers[leastSimilarIndex];
-        System.out.println("\n" +
-                           "The least similarity percentage to given symbol has %s %s".formatted(
-                                   leastSimilarSymbol.getMatchersSymbol(),
-                                   leastSimilarSymbol.getSimilarityPercentage()
-                           ) + ANSI_RESET);
+        AbstractSegmentedSymbolMatcher closestSimilar = Arrays.stream(matchers)
+                .peek(App::printSimilarityPercent)
+                .max(Comparator.comparingDouble(AbstractSegmentedSymbolMatcher::getSimilarityPercentage)).get();
+        AbstractSegmentedSymbolMatcher leastSimilar = Arrays.stream(matchers)
+                .min(Comparator.comparingDouble(AbstractSegmentedSymbolMatcher::getSimilarityPercentage)).get();
         System.out.print(ANSI_MAGENTA);
-        AbstractSegmentedSymbolMatcher closestSimilarSymbol = matchers[closestSimilarIndex];
         System.out.println("\n" +
                            "The closest similarity percentage to given symbol has %s %s".formatted(
-                                   closestSimilarSymbol.getMatchersSymbol(),
-                                   closestSimilarSymbol.getSimilarityPercentage()
+                                   closestSimilar.getMatchersSymbol(),
+                                   closestSimilar.getSimilarityPercentage()
+                           ) + ANSI_RESET);
+        System.out.print(ANSI_RED);
+        System.out.println("\n" +
+                           "The least similarity percentage to given symbol has %s %s".formatted(
+                                   leastSimilar.getMatchersSymbol(),
+                                   leastSimilar.getSimilarityPercentage()
                            ) + ANSI_RESET);
     }
 

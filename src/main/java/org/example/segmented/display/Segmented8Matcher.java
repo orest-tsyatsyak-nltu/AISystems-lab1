@@ -1,19 +1,18 @@
 package org.example.segmented.display;
 
-public class SegmentedCMatcher extends AbstractSegmentedSymbolMatcher{
-
-    public SegmentedCMatcher(char[][] letterInSegmentedForm) {
+public class Segmented8Matcher extends AbstractSegmentedSymbolMatcher{
+    public Segmented8Matcher(char[][] letterInSegmentedForm) {
         super(letterInSegmentedForm);
     }
 
     @Override
     protected int getNumberOfNeededHorizontalSegments() {
-        return 2;
+        return 3;
     }
 
     @Override
     protected int getNumberOfNeededVerticalSegments() {
-        return 2;
+        return 4;
     }
 
     @Override
@@ -22,12 +21,12 @@ public class SegmentedCMatcher extends AbstractSegmentedSymbolMatcher{
     }
 
     @Override
-    public char getMatchersSymbol() {
-        return 'C';
+    protected double additionalSimilarityFactor() {
+        return rowHasHorizontalSegment(8) ? 100 : 0;
     }
 
     @Override
-    protected double additionalSimilarityFactor() {
-        return rowHasHorizontalSegment(4) ? 0 : 100;
+    public char getMatchersSymbol() {
+        return '8';
     }
 }
