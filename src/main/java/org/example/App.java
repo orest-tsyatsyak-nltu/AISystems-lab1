@@ -1,10 +1,10 @@
 package org.example;
 
 import org.example.segmented.display.AbstractSegmentedSymbolMatcher;
+import org.example.segmented.display.Segmented1Matcher;
 import org.example.segmented.display.Segmented3Matcher;
-import org.example.segmented.display.Segmented8Matcher;
-import org.example.segmented.display.SegmentedHMatcher;
-import org.example.segmented.display.SegmentedOMatcher;
+import org.example.segmented.display.SegmentedEMatcher;
+import org.example.segmented.display.SegmentedUMatcher;
 import org.example.segmented.file.SegmentedCharacterFileReader;
 
 import java.io.File;
@@ -27,10 +27,10 @@ public class App {
         try {
             char[][] characterInSegmentedFormat = segmentedCharacterFileReader.readSegmentedCharacter();
             findTheLeastSimilarAndPrintIt(
+                    new Segmented1Matcher(characterInSegmentedFormat),
                     new Segmented3Matcher(characterInSegmentedFormat),
-                    new SegmentedHMatcher(characterInSegmentedFormat),
-                    new SegmentedOMatcher(characterInSegmentedFormat),
-                    new Segmented8Matcher(characterInSegmentedFormat)
+                    new SegmentedUMatcher(characterInSegmentedFormat),
+                    new SegmentedEMatcher(characterInSegmentedFormat)
             );
         } catch (RuntimeException ex) {
             ex.printStackTrace();

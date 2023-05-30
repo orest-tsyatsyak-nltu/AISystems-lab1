@@ -1,7 +1,7 @@
 package org.example.segmented.display;
 
-public class SegmentedHMatcher extends AbstractSegmentedSymbolMatcher{
-    public SegmentedHMatcher(char[][] letterInSegmentedForm) {
+public class SegmentedUMatcher extends AbstractSegmentedSymbolMatcher{
+    public SegmentedUMatcher(char[][] letterInSegmentedForm) {
         super(letterInSegmentedForm);
     }
 
@@ -22,12 +22,11 @@ public class SegmentedHMatcher extends AbstractSegmentedSymbolMatcher{
 
     @Override
     protected double additionalSimilarityFactor() {
-        return rowHasHorizontalSegment(8) ? 0 : 100;
+        return rowHasHorizontalSegment(8) ? 100 : 0;
     }
-
 
     @Override
     public char getMatchersSymbol() {
-        return 'H';
+        return 'U';
     }
 }

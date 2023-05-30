@@ -8,22 +8,22 @@ public class Segmented3Matcher extends AbstractSegmentedSymbolMatcher{
 
     @Override
     protected int getNumberOfNeededHorizontalSegments() {
-        return 2;
+        return 3;
     }
 
     @Override
     protected int getNumberOfNeededVerticalSegments() {
-        return 0;
-    }
-
-    @Override
-    protected int getNumberOfNeededDiagonalSegments() {
         return 2;
     }
 
     @Override
+    protected int getNumberOfNeededDiagonalSegments() {
+        return 0;
+    }
+
+    @Override
     protected double additionalSimilarityFactor() {
-        return rowHasHorizontalSegment(8) ? 0 : 100;
+        return rowHasHorizontalSegment(8) ? 100 : 0;
     }
 
     @Override
